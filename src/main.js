@@ -6,12 +6,21 @@ import EventsModel from './model/events-model.js';
 import FilterModel from './model/filter-model.js';
 import FilterPresenter from './presenter/filter-presenter.js';
 import NewEventButtonView from './view/new-event-button-view.js';
+import EventsApiService from './events-api-service.js';
+
+const AUTHORIZATION = 'Basic 322851bigtrip24';
+const BASE_URL = 'https://22.objects.htmlacademy.pro/big-trip';
 
 const siteHeaderElement = document.querySelector('.trip-main');
 const boardElement = document.querySelector('.trip-events');
 
-const eventsModel = new EventsModel();
+const eventsApiService = new EventsApiService(BASE_URL, AUTHORIZATION);
+
+const eventsModel = new EventsModel({
+  apiService: eventsApiService
+  });
 const filterModel = new FilterModel();
+
 const boardPresenter = new BoardPresenter({
   boardContainer: boardElement,
   eventsModel,

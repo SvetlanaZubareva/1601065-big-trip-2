@@ -1,13 +1,52 @@
-import { mockEvents } from '../mock/events.js';
-import { mockDestinations } from '../mock/destinations.js';
-import { mockOffers } from '../mock/offers.js';
+// import { mockEvents } from '../mock/events.js';
+// import { mockDestinations } from '../mock/destinations.js';
+// import { mockOffers } from '../mock/offers.js';
 import Observable from '../framework/observable.js';
-import { EVENT_TYPES } from '../const.js';
+import { EVENT_TYPES, UpdateType } from '../const.js';
 
 export default class EventsModel extends Observable {
-  #events = mockEvents;
-  #destinations = mockDestinations;
-  #offers = mockOffers;
+  #apiService = null;
+  #events = [];
+  #destinations = null;
+  #offers = null;
+
+  constructor({apiService, destinations, offers}) {
+    super();
+    this.#apiService = apiService;
+    this.#destinations = destinations;
+    this.#offers = offers;
+  }
+
+  async init() {
+    try{
+      const events = await this.#apiService.events;
+      this.#events = events.map(this.#adaptEventToClient);
+      this.#destinations = await this.#apiService.destinations;
+      this.#offers = await this.#apiService.offers;
+      this._notify(UpdateType.INIT)
+    } catch {
+      this.#events = [];
+      this.#destinations = [];
+      this.#offers = [];
+      this._notify(UpdateType.ERROR);
+    }
+  }
+
+  #adaptEventToClient(event) {
+    const newEvent = {
+      ...event,
+      basePrice: event['basePrice'],
+      dateTo: event['dateTo'],
+      dateFrom: event['dateFrom'],
+      isFavorite: event['isFavorite'],
+    }
+    delete newEvent['basePrice'];
+    delete newEvent['dateTo'];
+    delete newEvent['dateFrom'];
+    delete newEvent['isFavorite'];
+
+    return newEvent
+  }
 
   get events() {
     return this.#events;

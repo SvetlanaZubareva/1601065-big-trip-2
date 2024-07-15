@@ -25,6 +25,15 @@ const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
+  INIT: 'INIT',
+  ERROR: 'ERROR',
 };
 
-export {EVENT_TYPES, FILTER_TYPES, SORT_TYPES, UserAction, UpdateType};
+const ApiMethod = {
+  POST: 'POST',
+  GET: 'GET',
+  PUT: 'PUT',
+  DELETE: 'DELETE',
+}
+
+export {EVENT_TYPES, FILTER_TYPES, SORT_TYPES, UserAction, UpdateType, ApiMethod};
